@@ -4,13 +4,14 @@ const {
   openPeopleApp,
   takeScreenshot,
   By,
-  clickElement,
   until,
   waitForElement,
   typeText,
   generateGuid,
   expandSidebar,
 } = require("../src/utils.js");
+
+const { clickAddButton, verifyInGrid } = require("../src/grid.js");
 
 async function test1() {
   let driver;
@@ -24,13 +25,8 @@ async function test1() {
     // Open People app
     await openPeopleApp(driver);
 
-    // Click Add Employee button
-    console.log("➕ Clicking Add Employee button...");
-    await clickElement(
-      driver,
-      By.xpath("//a[@class='aut-button-add']//i[@class='icon']")
-    );
-    console.log("✅ Add Employee button clicked!");
+    // Click Add Employee button using grid function
+    await clickAddButton(driver);
 
     // Verify Add Employee flyout is opened
     console.log("🔍 Verifying Add Employee flyout...");
@@ -82,12 +78,15 @@ async function test1() {
 
     // Click on start date picker
     console.log("📅 Opening start date picker...");
-    await clickElement(driver, By.xpath("//*[@id='xEmployee-xStartDate']"));
+    const startDateField = await driver.findElement(
+      By.xpath("//*[@id='xEmployee-xStartDate']")
+    );
+    await startDateField.click();
     console.log("✅ Start date picker opened!");
 
     // Get today's date in MM/DD/YYYY format
     const today = new Date();
-    const month = String(today.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const month = String(today.getMonth() + 1).padStart(2, "0");
     const day = String(today.getDate()).padStart(2, "0");
     const year = today.getFullYear();
     const todayFormatted = `${month}/${day}/${year}`;
@@ -101,112 +100,103 @@ async function test1() {
       todayFormatted
     );
     console.log("✅ Start date filled!");
-
     // Click on department dropdown
     console.log("🏢 Opening department dropdown...");
-    await clickElement(
-      driver,
-      By.xpath("//*[@id='xEmployee-xDepartmentLookup']/div/button")
+    const departmentButton = await driver.findElement(
+      By.xpath(
+        "//*[@id='xEmployee-xDepartmentLookup']//button[@class='btn dropdown-toggle ellipsis btn-dropdown-menu aut-dropdown-optionList']"
+      )
     );
+    await departmentButton.click();
     console.log("✅ Department dropdown opened!");
 
     // Wait for dropdown options to appear
-    await new Promise((res) => setTimeout(res, 1000));
+    await new Promise((res) => setTimeout(res, 1500));
 
-    // Select second option using ng-repeat index
+    // Select second option using JavaScript executor
     console.log("✍️ Selecting department...");
-    const secondOption = await driver.wait(
-      until.elementLocated(
-        By.xpath(
-          "//ul[@class='dropdown-menu content-scroll']//li[@ng-repeat='item in data'][1]//a"
-        )
-      ),
-      10000
+    const departmentOptions = await driver.findElements(
+      By.xpath(
+        "//*[@id='xEmployee-xDepartmentLookup']//ul[@class='dropdown-menu content-scroll']//li[@ng-repeat='item in data']//a"
+      )
     );
-    await driver.wait(until.elementIsVisible(secondOption), 10000);
-    await secondOption.click();
+    console.log(`Found ${departmentOptions.length} department options`);
+    await driver.executeScript("arguments[0].click();", departmentOptions[1]);
     console.log("✅ Department selected!");
 
+    // Wait for dropdown to close
+    await new Promise((res) => setTimeout(res, 500));
     // Click on position dropdown
     console.log("💼 Opening position dropdown...");
-    await clickElement(
-      driver,
-      By.xpath("//*[@id='xEmployee-xPositionLookup']/div/button")
+    const positionButton = await driver.findElement(
+      By.xpath(
+        "//*[@id='xEmployee-xPositionLookup']//button[@class='btn dropdown-toggle ellipsis btn-dropdown-menu aut-dropdown-optionList']"
+      )
     );
+    await positionButton.click();
     console.log("✅ Position dropdown opened!");
 
     // Wait for dropdown options to appear
-    await new Promise((res) => setTimeout(res, 1000));
+    await new Promise((res) => setTimeout(res, 1500));
 
     // Select second option using JavaScript executor
     console.log("✍️ Selecting position...");
-    const secondPositionOption = await driver.findElement(
-      By.xpath("//a[@class='aut-button-123Option']")
+    const positionOptions = await driver.findElements(
+      By.xpath(
+        "//*[@id='xEmployee-xPositionLookup']//ul[@class='dropdown-menu content-scroll']//li[@ng-repeat='item in data']//a"
+      )
     );
-    await driver.executeScript("arguments[0].click();", secondPositionOption);
+    console.log(`Found ${positionOptions.length} position options`);
+    await driver.executeScript("arguments[0].click();", positionOptions[1]);
     console.log("✅ Position selected!");
 
+    // Wait for dropdown to close
+    await new Promise((res) => setTimeout(res, 500));
     // Click on location dropdown
     console.log("📍 Opening location dropdown...");
-    await clickElement(
-      driver,
-      By.xpath("//*[@id='xEmployee-xLocationLookup']/div/button")
+    const locationButton = await driver.findElement(
+      By.xpath(
+        "//*[@id='xEmployee-xLocationLookup']//button[@class='btn dropdown-toggle ellipsis btn-dropdown-menu aut-dropdown-optionList']"
+      )
     );
+    await locationButton.click();
     console.log("✅ Location dropdown opened!");
 
     // Wait for dropdown options to appear
-    await new Promise((res) => setTimeout(res, 1000));
+    await new Promise((res) => setTimeout(res, 1500));
 
-    // Select first location option using JavaScript executor
+    // Select second option using JavaScript executor
     console.log("✍️ Selecting location...");
-    const locationOption = await driver.findElement(
-      By.xpath("//a[contains(@class, 'aut-button-101_construction_way')]")
+    const locationOptions = await driver.findElements(
+      By.xpath(
+        "//*[@id='xEmployee-xLocationLookup']//ul[@class='dropdown-menu content-scroll']//li[@ng-repeat='item in data']//a"
+      )
     );
-    await driver.executeScript("arguments[0].click();", locationOption);
+    console.log(`Found ${locationOptions.length} location options`);
+    await driver.executeScript("arguments[0].click();", locationOptions[1]);
     console.log("✅ Location selected!");
 
     // Click Save button
     console.log("💾 Clicking Save button...");
-    await clickElement(
-      driver,
+    const saveButton = await driver.findElement(
       By.xpath("//button[@class='btn aut-button-save btn-primary ng-scope']")
     );
+    await saveButton.click();
     console.log("✅ Save button clicked!");
 
     // Wait for employee to be saved
     await new Promise((res) => setTimeout(res, 2000));
     console.log("✅ Employee saved successfully!");
 
-    // Verify employee was added successfully
-    console.log("🔍 Verifying employee was added...");
-
-    // Expand sidebar and open People app again
+    // Verify employee was added successfully using grid function
     await expandSidebar(driver);
     await openPeopleApp(driver);
-
-    // Click on First Name search field
-    console.log("🔎 Searching for newly added employee...");
-    await clickElement(driver, By.xpath("//input[@placeholder='First Name']"));
-
-    // Type the first name of the recently added employee
-    await typeText(
+    await verifyInGrid(
       driver,
-      By.xpath("//input[@placeholder='First Name']"),
-      firstName
+      "//input[@placeholder='First Name']", // Search field xpath
+      firstName, // Search value
+      `//a[normalize-space()='${firstName}']` // Grid item xpath
     );
-    console.log(`✍️ Searching for: ${firstName}`);
-
-    // Wait a bit for grid to filter
-    await new Promise((res) => setTimeout(res, 1500));
-
-    // Verify employee appears in the grid
-    console.log("✅ Verifying employee in grid...");
-    const employeeInGrid = await driver.wait(
-      until.elementLocated(By.xpath(`//a[normalize-space()='${firstName}']`)),
-      10000
-    );
-    await driver.wait(until.elementIsVisible(employeeInGrid), 10000);
-    console.log("✅ Employee verified in grid! Employee added successfully!");
 
     console.log("✅ Test1 completed successfully!");
   } catch (error) {
@@ -219,5 +209,5 @@ async function test1() {
   }
 }
 
-
+// Run test1
 test1();

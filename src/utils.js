@@ -175,29 +175,6 @@ async function testCore(driver, username, password) {
   }
 }
 
-// Open People app
-async function openPeopleApp(driver) {
-  try {
-    console.log("👥 Opening People app...");
-    await clickElement(driver, By.xpath("//span[normalize-space()='People']"));
-    console.log("✅ People app opened!");
-    
-    // Verify we are on People app screen
-    console.log("🔍 Verifying People app screen...");
-    const peopleItem = await waitForElement(
-      driver, 
-      By.xpath("//a[@ng-show='!menuItem.SubMenus.length'][normalize-space()='People']"),
-      10000
-    );
-    await driver.wait(until.elementIsVisible(peopleItem), 10000);
-    console.log("✅ People app screen verified!");
-    
-  } catch (error) {
-    console.error("❌ Failed to open People app:", error.message);
-    throw error;
-  }
-}
-
 // Generate GUID
 function generateGuid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -221,6 +198,5 @@ module.exports = {
   takeScreenshot,
   expandSidebar,
   testCore,
-  openPeopleApp,
   generateGuid,
 };

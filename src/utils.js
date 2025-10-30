@@ -2,6 +2,7 @@ const { Builder, Browser, By, Key, until } = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
 const fs = require('fs');
 const path = require('path');
+const { getEnvironmentUrl } = require("../config.js");
 
 async function initializeChrome() {
   let options = new chrome.Options();
@@ -139,14 +140,18 @@ async function expandSidebar(driver, timeout = 10000) {
 }
 
 // Core test flow - login and prepare
-async function testCore(driver, username, password) {
+async function testCore(driver, username, password, env = 'prod') {
   try {
     console.log("🚀 Starting test setup...");
+    console.log(`🌍 Environment: ${env.toUpperCase()}`);
     
     await driver.manage().window().maximize();
     
+    // Get environment URL
+    const url = getEnvironmentUrl(env);
+    
     console.log("🌐 Navigating to login page...");
-    await goTo(driver, "https://corehr.hrcloud.com/Start/#/Authentication/Login");
+    await goTo(driver, url);
     
     console.log("🔐 Logging in...");
     await login(driver, username, password);

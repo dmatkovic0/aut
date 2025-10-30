@@ -44,36 +44,33 @@ async function openPeopleApp(driver) {
 async function openPositions(driver) {
   try {
     console.log("💼 Opening Positions...");
-
+    
     const positionsLink = await driver.wait(
-      until.elementLocated(
-        By.xpath(
-          "//a[@ng-show='!menuItem.SubMenus.length'][normalize-space()='Positions']"
-        )
-      ),
+      until.elementLocated(By.xpath("//a[@ng-show='!menuItem.SubMenus.length'][normalize-space()='Positions']")),
       10000
     );
     await driver.wait(until.elementIsVisible(positionsLink), 10000);
     await positionsLink.click();
-    console.log("✅ Positions opened!");
-
-    // Verify we are on Positions screen
+    console.log("✅ Positions clicked!");
+    
+    // Wait for navigation to complete
+    await new Promise((res) => setTimeout(res, 2000));
+    
+    // Verify we are on Positions screen - re-locate the element after navigation
     console.log("🔍 Verifying Positions screen...");
     const positionTitleHeader = await driver.wait(
-      until.elementLocated(
-        By.xpath(
-          "//th[@data-field='xPositionTitle']//span[@class='k-header-text'][normalize-space()='Position Title']"
-        )
-      ),
+      until.elementLocated(By.xpath("//th[@data-field='xPositionTitle']//span[@class='k-header-text'][normalize-space()='Position Title']")),
       10000
     );
     await driver.wait(until.elementIsVisible(positionTitleHeader), 10000);
     console.log("✅ Positions screen verified!");
+    
   } catch (error) {
     console.error("❌ Failed to open Positions:", error.message);
     throw error;
   }
 }
+
 
 // Add position with GUID and verify
 async function addPositionFlyout(driver, expandSidebar) {

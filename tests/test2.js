@@ -22,7 +22,7 @@ async function test1() {
     driver = await initializeChrome();
     
     // Run core setup with credentials
-    await testCore(driver, "admin+dadotest@neogov.com", "Password123!!");
+    await testCore(driver, "dmatkovic333@mail.com", "Password123!!", "stg");
     
     // Open People app
     await openPeopleApp(driver);

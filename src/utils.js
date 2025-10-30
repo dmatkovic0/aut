@@ -2,7 +2,7 @@ const { Builder, Browser, By, Key, until } = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
 const fs = require('fs');
 const path = require('path');
-const { getEnvironmentUrl } = require("../config.js");
+const { getEnvironmentUrl } = require("./config.js");
 
 async function initializeChrome() {
   let options = new chrome.Options();
@@ -161,7 +161,7 @@ async function testCore(driver, username, password, env = 'prod') {
     
     console.log("⏳ Waiting for homepage...");
     const homepageTitle = await driver.wait(
-      until.elementLocated(By.xpath("//h1[normalize-space()='Homepage']")),
+      until.elementLocated(By.xpath("//h1[normalize-space()='Onboard']")),
       10000
     );
     await driver.wait(until.elementIsVisible(homepageTitle), 10000);

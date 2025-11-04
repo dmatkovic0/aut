@@ -56,7 +56,7 @@ async function test2() {
   try {
     driver = await initializeChrome();
     
-    await testCore(driver, "hr2admin222@mail.com", "Password123!", "stg");
+    await testCore(driver, "hr2admin222@mail.com", "Password123!!", "stg");
     await openPeopleApp(driver);
     await clickAddButton(driver);
     await verifyAddEmployeeFlyout(driver);
@@ -84,7 +84,7 @@ async function test3() {
   try {
     driver = await initializeChrome();
     
-    await testCore(driver, "hr2admin222@mail.com", "Password123!", "stg");
+    await testCore(driver, "hr2admin222@mail.com", "Password123!!", "stg");
     await openPeopleApp(driver);
     await clickAddButton(driver);
     await verifyAddEmployeeFlyout(driver);
